@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Traits\HasPermissionsTrait;
+use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use  HasFactory, Notifiable, HasPermissionsTrait;
+    use  HasFactory, Notifiable, HasApiTokens, HasPermissionsTrait;
 
     /**
      * The attributes that are mass assignable.

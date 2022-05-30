@@ -197,6 +197,7 @@ return [
 
         // custom providers
         App\Providers\PermissionsServiceProvider::class,
+        Laravel\Passport\PassportServiceProvider::class,
 
     ],
 
