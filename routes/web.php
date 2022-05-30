@@ -19,3 +19,9 @@ Route::get('/', function () {
 });
 
 Route::get('/roles', [PermissionController::class, 'Permission']);
+
+Route::group(['middleware' => 'role:developer'], function () {
+    Route::get('/admin', function () {
+        return 'Welcome Admin';
+    });
+});
