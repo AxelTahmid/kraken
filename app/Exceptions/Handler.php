@@ -60,30 +60,6 @@ class Handler extends ExceptionHandler
     }
 
     /**
-     * Report or log an exception.
-     *
-     * @param \Throwable $exception
-     *
-     * @return void
-     *
-     * @throws \Exception
-     */
-    // public function report(Throwable $exception)
-    // {
-    //     $ignoreable_exception_messages = ['Unauthenticated or Token Expired, Please Login'];
-    //     //$ignoreable_exception_messages[] = 'The refresh token is invalid.';
-    //     $ignoreable_exception_messages[] = 'The resource owner or authorization server denied the request.';
-
-    //     if (app()->bound('sentry') && $this->shouldReport($exception)) {
-    //         if (!in_array($exception->getMessage(), $ignoreable_exception_messages)) {
-    //             app('sentry')->captureException($exception);
-    //         }
-    //     }
-
-    //     parent::report($exception);
-    // }
-
-    /**
      * Render an exception into an HTTP response.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -119,12 +95,14 @@ class Handler extends ExceptionHandler
         if ($exception instanceof MethodNotAllowedHttpException) {
             return $this->errorResponse('The specified method for the request is invalid', 405);
         }
-        
+        // if all fails, base classes message
         if ($exception instanceof \Error) {
-            return $this->errorResponse('Unexpected Exception. Try later', 500);
+            return $this->errorResponse($exception->getMessage(), 500);
+        };
+        if ($exception instanceof \Exception) {
+            return $this->errorResponse($exception->getMessage(), 500);
         };
         return parent::render($request, $exception);
-
         // will only generate exception if app.debug is true
         // if (config('app.debug')) {
         //     return parent::render($request, $exception);

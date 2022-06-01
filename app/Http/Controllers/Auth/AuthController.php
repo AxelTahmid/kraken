@@ -21,19 +21,12 @@ class AuthController extends Controller
         $credentials = $request->validated();
         // print_r($credentials);die;  
 
-        // if (!Auth::attempt($credentials)) {
-        //     return $this->errorResponse('Incorrect Credentials', 401);
-        // }
+        if (!Auth::attempt($credentials)) {
+            return $this->errorResponse('Incorrect Credentials', 401);
+        }
 
         $user = $request->user();
         $tokenResult = $user->createToken('Personal Access Token');
-        $token = $tokenResult->token;
-
-        if ($request->remember_me) {
-            $token->expires_at = Carbon::now()->addWeeks(1);
-        }
-
-        $token->save();
 
         $data = [
             'access_token' => $tokenResult->accessToken,
@@ -64,8 +57,7 @@ class AuthController extends Controller
 
     public function logout()
     {
-        request()->user()->token()->revoke();
-
+        request()->user()->token()->delete();
         return $this->successResponse(
             '',
             'Logout Successfull',
