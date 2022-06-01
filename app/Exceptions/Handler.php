@@ -83,8 +83,6 @@ class Handler extends ExceptionHandler
         parent::report($exception);
     }
 
-
-
     /**
      * Render an exception into an HTTP response.
      *
@@ -95,15 +93,6 @@ class Handler extends ExceptionHandler
     public function render($request, Throwable $exception)
     {
 
-        if ($exception instanceof MethodNotAllowedHttpException) {
-            return $this->errorResponse('The specified method for the request is invalid', 405);
-        }
-        if ($exception instanceof NotFoundHttpException) {
-            return $this->errorResponse('The specified URL cannot be found', 404);
-        }
-        if ($exception instanceof HttpException) {
-            return $this->errorResponse($exception->getMessage(), $exception->getStatusCode());
-        }
         if ($exception instanceof PostTooLargeException) {
             return $this->errorResponse("Size of attached file should be less " . ini_get("upload_max_filesize") . "B", 400);
         };
@@ -113,12 +102,24 @@ class Handler extends ExceptionHandler
         if ($exception instanceof ThrottleRequestsException) {
             return $this->errorResponse('Too Many Requests,Please Slow Down', 429);
         };
+        if ($exception instanceof ModelNotFoundException) {
+            return $this->errorResponse('Entry for ' . str_replace('App\\', '', $exception->getModel()) . ' not found', 404);
+        };
         if ($exception instanceof ValidationException) {
             return $this->errorResponse($exception->getMessage(), 422);
         };
         if ($exception instanceof QueryException) {
             return $this->errorResponse('There was Issue with the Query', 500);
         };
+        if ($exception instanceof NotFoundHttpException) {
+            return $this->errorResponse('The specified URL cannot be found', 404);
+        }
+        if ($exception instanceof HttpException) {
+            return $this->errorResponse($exception->getMessage(), $exception->getStatusCode());
+        }
+        if ($exception instanceof MethodNotAllowedHttpException) {
+            return $this->errorResponse('The specified method for the request is invalid', 405);
+        }
         if (config('app.debug')) {
             return parent::render($request, $exception);
         }

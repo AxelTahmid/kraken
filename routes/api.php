@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -18,7 +19,8 @@ use Illuminate\Support\Facades\Route;
 Route::post('/clear', function () {
     Artisan::call('optimize:clear');
     return response()->json([
-        'message' => 'All Cache Purged Sucessfully'
+        'success' => true,
+        'message' => 'All Cache Purged Sucessfully',
     ], 200);
 });
 
@@ -28,6 +30,7 @@ Route::prefix('auth')->group(function () {
     Route::post('register', [AuthController::class, 'register']);
 
     Route::middleware('auth:api')->group(function () {
+
         Route::get('logout', [AuthController::class, 'logout']);
         Route::get('me', [AuthController::class, 'user']);
     });
