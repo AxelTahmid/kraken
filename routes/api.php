@@ -1,8 +1,8 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,13 +15,20 @@ use Illuminate\Http\Request;
 |
 */
 
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
+Route::post('/clear', function () {
+    Artisan::call('optimize:clear');
+    return response()->json([
+        'message' => 'All Cache Purged Sucessfully'
+    ], 200);
+});
 
-// public routes
+Route::prefix('auth')->group(function () {
 
+    Route::post('login', [AuthController::class, 'login'])->name('login');
+    Route::post('register', [AuthController::class, 'register']);
 
-Route::post('/login', [AuthController::class, 'login'])->name('api.login');
-Route::post('/register', [AuthController::class, 'register'])->name('api.register');
-Route::post('/logout', [AuthController::class, 'logout'])->name('api.logout');
+    Route::middleware('auth:api')->group(function () {
+        Route::get('logout', [AuthController::class, 'logout']);
+        Route::get('me', [AuthController::class, 'user']);
+    });
+});
