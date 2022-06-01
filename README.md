@@ -15,6 +15,7 @@ Laracom is a ecommerce API starter template created as an experiment. feel free 
     ```
 2. Copy .env.example to .env and set your DB variables.
     ```sh
+     php artisan key:generate
      php artisan migrate
     ```
 3. Configure Passport. Use the keys given in terminal after command to set .env values
