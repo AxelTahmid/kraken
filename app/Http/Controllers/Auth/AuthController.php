@@ -9,9 +9,12 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use App\Traits\ApiResponseTrait;
 
 class AuthController extends Controller
 {
+    use ApiResponseTrait;
+
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -56,16 +59,18 @@ class AuthController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response(['errors' => $validator->errors()->all()], 422);
+            return $this->errorResponse($validator->errors()->all(), 422);
         }
 
         $request['password'] = Hash::make($request['password']);
 
-        User::create($request->toArray());
+        $user = User::create($request->toArray());
 
-        return response()->json([
-            'message' => 'Successfully created user!',
-        ], 201);
+        return $this->successResponse(
+            $user,
+            'Successfully created user!',
+            201
+        );
     }
 
     public function logout()

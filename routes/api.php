@@ -32,3 +32,10 @@ Route::prefix('auth')->group(function () {
         Route::get('me', [AuthController::class, 'user']);
     });
 });
+
+
+Route::fallback(function () {
+    return response()->json([
+        'message' => 'Page Not Found'
+    ], 404);
+});
