@@ -1,7 +1,5 @@
 <?php
 
-use App\Http\Controllers\PermissionController;
-use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,15 +11,3 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::get('/', function () {
-    return view('welcome');
-});
-
-Route::get('/roles', [PermissionController::class, 'Permission']);
-
-Route::group(['middleware' => 'role:developer'], function () {
-    Route::get('/admin', function () {
-        return 'Welcome Admin';
-    });
-});

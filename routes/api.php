@@ -1,8 +1,9 @@
 <?php
 
-use App\Http\Controllers\Auth\AuthController;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Artisan;
+use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\Auth\AuthController;
 
 
 /*
@@ -15,6 +16,10 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+Route::get('/', function () {
+    return response()->json('Hello There');
+});
 
 Route::post('/clear', function () {
     Artisan::call('optimize:clear');
@@ -31,14 +36,17 @@ Route::prefix('auth')->group(function () {
 
     Route::middleware('auth:api')->group(function () {
 
-        Route::get('logout', [AuthController::class, 'logout']);
+        Route::post('logout', [AuthController::class, 'logout']);
         Route::get('me', [AuthController::class, 'user']);
     });
 });
 
 
-Route::fallback(function () {
-    return response()->json([
-        'message' => 'Page Not Found'
-    ], 404);
+Route::get('/roles', [PermissionController::class, 'Permission']);
+
+Route::middleware('role:developer')->group(function () {
+
+    Route::get('/admin', function () {
+        return response()->json('Welcome Admin');
+    });
 });

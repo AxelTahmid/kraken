@@ -6,32 +6,24 @@ use Carbon\Carbon;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\LoginPostRequest;
+use App\Http\Requests\RegisterPostRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 use App\Traits\ApiResponseTrait;
 
 class AuthController extends Controller
 {
     use ApiResponseTrait;
 
-    public function login(Request $request)
+    public function login(LoginPostRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|string|email|max:255',
-            'password' => 'required|string|min:6',
-        ]);
-
-        if ($validator->fails()) {
-            return $this->errorResponse($validator->errors()->all(), 422);
-        }
-
-        $credentials = request(['email', 'password']);
+        $credentials = $request->validated();
         // print_r($credentials);die;  
 
-        if (!Auth::attempt($credentials)) {
-            return $this->errorResponse('Incorrect Credentials', 401);
-        }
+        // if (!Auth::attempt($credentials)) {
+        //     return $this->errorResponse('Incorrect Credentials', 401);
+        // }
 
         $user = $request->user();
         $tokenResult = $user->createToken('Personal Access Token');
@@ -56,25 +48,16 @@ class AuthController extends Controller
         );
     }
 
-    public function register(Request $request)
+    public function register(RegisterPostRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6|confirmed',
-        ]);
+        $form_data = $request->validated();
+        $form_data['password'] = Hash::make($request['password']);
 
-        if ($validator->fails()) {
-            return $this->errorResponse($validator->errors()->all(), 422);
-        }
-
-        $request['password'] = Hash::make($request['password']);
-
-        $user = User::create($request->toArray());
+        $user = User::create($form_data);
 
         return $this->successResponse(
             $user,
-            'Successfully created user!',
+            'Registration Successfull',
             201
         );
     }
@@ -85,7 +68,7 @@ class AuthController extends Controller
 
         return $this->successResponse(
             '',
-            'Logout Successfull !',
+            'Logout Successfull',
             200
         );
     }
