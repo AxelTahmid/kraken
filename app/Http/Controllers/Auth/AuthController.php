@@ -23,14 +23,14 @@ class AuthController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()->all()], 422);
+            return $this->errorResponse($validator->errors()->all(), 422);
         }
 
         $credentials = request(['email', 'password']);
         // print_r($credentials);die;  
 
         if (!Auth::attempt($credentials)) {
-            return response()->json(['message' => 'Unauthorized'], 401);
+            return $this->errorResponse('Incorrect Credentials', 401);
         }
 
         $user = $request->user();
@@ -43,11 +43,17 @@ class AuthController extends Controller
 
         $token->save();
 
-        return response()->json([
+        $data = [
             'access_token' => $tokenResult->accessToken,
             'token_type' => 'Bearer',
             'expires_at' => Carbon::parse($tokenResult->token->expires_at)->toDateTimeString()
-        ]);
+        ];
+
+        return $this->successResponse(
+            $data,
+            'Login Sucessful!',
+            200
+        );
     }
 
     public function register(Request $request)
@@ -77,13 +83,19 @@ class AuthController extends Controller
     {
         request()->user()->token()->revoke();
 
-        return response([
-            'message' => 'Successfully logged out',
-        ], 200);
+        return $this->successResponse(
+            '',
+            'Logout Successfull !',
+            200
+        );
     }
 
     public function user(Request $request)
     {
-        return response()->json($request->user());
+        return $this->successResponse(
+            $request->user(),
+            'Active User Fetched!',
+            200
+        );
     }
 }

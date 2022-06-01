@@ -2,10 +2,11 @@
 
 namespace App\Traits;
 
+
 trait ApiResponseTrait
 {
 
-    protected function successResponse($data, $message = null, $status = 200)
+    protected function successResponse($data = null, $message = null, $status = 200)
     {
         return response()->json([
             'success' => true,

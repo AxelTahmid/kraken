@@ -72,7 +72,8 @@ class Handler extends ExceptionHandler
     {
         $ignoreable_exception_messages = ['Unauthenticated or Token Expired, Please Login'];
         //$ignoreable_exception_messages[] = 'The refresh token is invalid.';
-        $ignoreable_exception_messages = ['The resource owner or authorization server denied the request.'];
+        $ignoreable_exception_messages[] = 'The resource owner or authorization server denied the request.';
+
         if (app()->bound('sentry') && $this->shouldReport($exception)) {
             if (!in_array($exception->getMessage(), $ignoreable_exception_messages)) {
                 app('sentry')->captureException($exception);
