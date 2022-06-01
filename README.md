@@ -1,15 +1,15 @@
 # Laracom -> Laravel E-commerce RESTful API
 
-Laracom is a API starter template created for robust ecommerce performance.
+Laracom is a ecommerce API starter template created as an experiment. feel free to fork or use however you want.
 
 ## Project Features & Progress
 
 -   OAuth2 Server
--   Role Based Access Control ( RBAC )
+-   Role Based Access Control ( RBAC ) without any package
 
 ## Installation Steps:
 
-1. PHP >= 8.0.2 & Composer >=2 installed in your environment.
+1. `PHP >= 8.0.2` & `Composer >=2` installed in your environment.
     ```sh
      composer install
     ```
