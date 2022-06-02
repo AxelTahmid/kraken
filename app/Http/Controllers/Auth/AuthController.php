@@ -10,12 +10,9 @@ use App\Http\Requests\LoginPostRequest;
 use App\Http\Requests\RegisterPostRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use App\Traits\ApiResponseTrait;
 
 class AuthController extends Controller
 {
-    use ApiResponseTrait;
-
     public function login(LoginPostRequest $request)
     {
         $credentials = $request->validated();

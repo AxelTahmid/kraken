@@ -97,10 +97,10 @@ class Handler extends ExceptionHandler
         }
         // if all fails, base classes message
         if ($exception instanceof \Error) {
-            return $this->errorResponse($exception->getMessage(), 500);
+            return $this->errorResponse('\Error: ' . $exception->getMessage(), 500);
         };
         if ($exception instanceof \Exception) {
-            return $this->errorResponse($exception->getMessage(), 500);
+            return $this->errorResponse('\Exception: ' . $exception->getMessage(), 500);
         };
         return parent::render($request, $exception);
         // will only generate exception if app.debug is true
