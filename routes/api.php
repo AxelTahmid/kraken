@@ -43,7 +43,7 @@ Route::prefix('auth')->controller(AuthController::class)->group(function () {
 
 Route::get('/roles', [PermissionController::class, 'Permission']);
 
-Route::middleware('role:developer')->group(function () {
+Route::middleware('role:admin')->group(function () {
 
     Route::get('/admin', function () {
         return response()->json('Welcome Admin');
