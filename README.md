@@ -13,16 +13,21 @@ Laracom is a ecommerce API starter template created as an experiment. feel free 
     ```sh
      composer install
     ```
-2. Copy .env.example to .env and set your DB variables.
+2. Copy `.env.example` to `.env` and set your DB variables, then migrate.
     ```sh
      php artisan key:generate
-     php artisan migrate
+     php artisan migrate --seed
     ```
-3. Configure Passport. Use the keys given in terminal after command to set .env values
+3. Seeder will create following admin credentials with Role & Permission CRUD
+    ```sh
+     super@tahmid.com
+     password
+    ```
+4. Configure Passport. Use the keys given in terminal after command to set .env values
     ```sh
     php artisan passport:install
     ```
-4. Serve your application
+5. Serve your application
     ```sh
     php artisan serve
     ```
