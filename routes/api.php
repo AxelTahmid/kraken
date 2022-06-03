@@ -29,15 +29,14 @@ Route::post('/clear', function () {
     ], 200);
 });
 
-Route::prefix('auth')->group(function () {
+Route::prefix('auth')->controller(AuthController::class)->group(function () {
 
-    Route::post('login', [AuthController::class, 'login'])->name('login');
-    Route::post('register', [AuthController::class, 'register']);
+    Route::post('login', 'login')->name('login');
+    Route::post('register', 'register');
 
     Route::middleware('auth:api')->group(function () {
-
-        Route::post('logout', [AuthController::class, 'logout']);
-        Route::get('me', [AuthController::class, 'user']);
+        Route::post('logout', 'logout');
+        Route::get('me', 'user');
     });
 });
 
