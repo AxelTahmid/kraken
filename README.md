@@ -1,6 +1,6 @@
-# Laracom -> Laravel E-commerce RESTful API
+# Zero Config Laravel API Starter Boilerplate.
 
-Laracom is a ecommerce API starter template created as an experiment. feel free to fork or use however you want.
+Laracom is a Laravel API starter template created as an experiment. feel free to fork or use however you want.
 
 ## Project Features & Progress
 
