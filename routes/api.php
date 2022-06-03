@@ -2,7 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
-use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\Admin\PermissionController;
+use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Auth\AuthController;
 
 
@@ -29,23 +30,27 @@ Route::post('/clear', function () {
     ], 200);
 });
 
-Route::prefix('auth')->controller(AuthController::class)->group(function () {
+Route::prefix('/auth')->controller(AuthController::class)->group(function () {
 
-    Route::post('login', 'login')->name('login');
-    Route::post('register', 'register');
+    Route::post('/login', 'login')->name('login');
+    Route::post('/register', 'register');
 
     Route::middleware('auth:api')->group(function () {
-        Route::post('logout', 'logout');
-        Route::get('me', 'user');
+        Route::post('/logout', 'logout');
+        Route::get('/me', 'user');
     });
 });
 
 
-Route::get('/roles', [PermissionController::class, 'Permission']);
 
-Route::middleware('role:admin')->group(function () {
+Route::prefix('/admin')->middleware('auth:api')->group(function () {
 
-    Route::get('/admin', function () {
-        return response()->json('Welcome Admin');
+    Route::middleware('role:admin')->group(function () {
+
+        Route::get('/dashboard', function () {
+            return response()->json('Welcome Admin');
+        });
+        Route::apiResource('/role', RoleController::class);
+        Route::apiResource('/permission', PermissionController::class);
     });
 });
