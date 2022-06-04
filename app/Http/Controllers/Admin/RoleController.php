@@ -16,7 +16,7 @@ class RoleController extends Controller
     public function index(Request $request)
     {
         return $this->successResponse(
-            Role::all(),
+            Role::with('permissions')->get(),
             'Roles List Fetched'
         );
     }
@@ -41,7 +41,7 @@ class RoleController extends Controller
     public function show(Request $request, $slug)
     {
         return $this->successResponse(
-            Role::where('slug', $slug)->firstOrFail(),
+            Role::where('slug', $slug)->with('permissions')->firstOrFail(),  //->get(), 
             'Role Fetched'
         );
     }

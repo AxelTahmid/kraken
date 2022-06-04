@@ -52,11 +52,12 @@ Route::prefix('/admin')->middleware('auth:api')->group(function () {
 
     Route::middleware('role:admin')->group(function () {
 
+        // middlware second params ->  'role:admin,read-permission'
         Route::prefix('/permission')->controller(PermissionController::class)->group(function () {
             Route::get('/', 'index')->middleware('can:read-permission');
             Route::post('/', 'store')->middleware('can:create-permission');
             Route::get('/{slug}', 'show')->middleware('can:read-permission');
-            Route::patch('/{slug}', 'update')->middleware('can:update-permission');
+            Route::match(['put', 'patch'], '/{slug}', 'update')->middleware('can:update-permission');
             Route::delete('/{slug}', 'destroy')->middleware('can:delete-permission');
         });
 
@@ -64,7 +65,7 @@ Route::prefix('/admin')->middleware('auth:api')->group(function () {
             Route::get('/', 'index')->middleware('can:read-role');
             Route::post('/', 'store')->middleware('can:create-role');
             Route::get('/{slug}', 'show')->middleware('can:read-role');
-            Route::patch('/{slug}', 'update')->middleware('can:update-role');
+            Route::match(['put', 'patch'], '/{slug}', 'update')->middleware('can:update-role');
             Route::delete('/{slug}', 'destroy')->middleware('can:delete-role');
         });
     });

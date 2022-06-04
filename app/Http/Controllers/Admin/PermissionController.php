@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Permission;
+use App\Models\Role;
 use Illuminate\Http\Request;
 
 class PermissionController extends Controller
@@ -34,7 +35,16 @@ class PermissionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $form_data = $request->validate([
+            'name' => 'required|string|max:191',
+            'slug' => 'required|unique:permissions,slug|max:191',
+        ]);
+        $permission = Permission::create($form_data);
+
+        return $this->successResponse(
+            $permission,
+            'Permission Created.'
+        );
     }
 
     /**
@@ -45,11 +55,8 @@ class PermissionController extends Controller
      */
     public function show(Request $request, $slug)
     {
-        // if (!$request->user()->can('read-permission')) {
-        //     abort(403, 'Action Not Permitted');
-        // }
         return $this->successResponse(
-            Permission::where('slug', $slug)->firstOrFail(),
+            Permission::where('slug', $slug)->with('roles')->firstOrFail(),
             'Permission Fetched'
         );
     }
@@ -63,7 +70,31 @@ class PermissionController extends Controller
      */
     public function update(Request $request, $slug)
     {
-        //
+        $form_data = $request->validate([
+            'name' => 'string|max:191',
+            'slug' => 'string|max:191',
+            'role' => 'string|max:191',
+        ]);
+        $permission = Permission::where('slug', $slug)->firstOrFail();
+        $message = 'Permision Found.';
+
+        if (isset($form_data['name'])  || isset($form_data['slug'])) {
+            $permission->update([
+                'name' => $form_data['name'],
+                'slug' => $form_data['slug'],
+            ]);
+            $message = 'Permission Updated.';
+        }
+        if (isset($form_data['role'])) {
+            Role::where('slug', $form_data['role'])->firstOrFail();
+            $permission->attach($form_data['role']);
+            $message = 'Permission Updated, Role Attached.';
+        };
+
+        return $this->successResponse(
+            $permission,
+            $message
+        );
     }
 
     /**
