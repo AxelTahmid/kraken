@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Models\Role;
 
 class RoleController extends Controller
 {
@@ -12,9 +13,12 @@ class RoleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        if (!$request->user()->can('read-role')) {
+            abort(403, 'Action Not Permitted');
+        }
+        return $this->successResponse(Role::all(), 'Roles List Fetched');
     }
 
     /**
@@ -34,9 +38,12 @@ class RoleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request, $slug)
     {
-        //
+        if (!$request->user()->can('read-role')) {
+            abort(403, 'Action Not Permitted');
+        }
+        return $this->successResponse(Role::where('slug', $slug)->firstOrFail(), 'Role Fetched');
     }
 
     /**

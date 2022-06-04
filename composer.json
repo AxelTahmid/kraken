@@ -1,8 +1,8 @@
 {
     "name": "axeltahmid/laracom",
     "type": "project",
-    "description": "Ecommerce API Starter",
-    "keywords": ["framework", "laravel", "ecommerce"],
+    "description": "Laravel API Starter Boilerplate",
+    "keywords": ["framework", "laravel", "api", "RBAC"],
     "license": "MIT",
     "require": {
         "php": "^8.0.2",

@@ -45,12 +45,13 @@ Route::prefix('/auth')->controller(AuthController::class)->group(function () {
 
 Route::prefix('/admin')->middleware('auth:api')->group(function () {
 
+    Route::get('/dashboard', function () {
+        return response()->json('Welcome Admin');
+    })->middleware('can:read-role');
+
     Route::middleware('role:admin')->group(function () {
 
-        Route::get('/dashboard', function () {
-            return response()->json('Welcome Admin');
-        });
-        Route::apiResource('/role', RoleController::class);
         Route::apiResource('/permission', PermissionController::class);
+        Route::apiResource('/role', RoleController::class);
     });
 });

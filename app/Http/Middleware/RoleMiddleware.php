@@ -19,7 +19,7 @@ class RoleMiddleware
             abort(403, "Forbidden Access");
         }
         if ($permission !== null && !$request->user()->can($permission)) {
-            abort(403, "Forbidden Action");
+            abort(403, "Action Not Permitted");
         }
         return $next($request);
     }

@@ -80,9 +80,9 @@ class Handler extends ExceptionHandler
         if ($exception instanceof ThrottleRequestsException) {
             return $this->errorResponse('Too Many Requests,Please Slow Down', 429);
         };
-        // if ($exception instanceof ModelNotFoundException) {
-        //     return $this->errorResponse('Entry for ' . str_replace('App\\', '', $exception->getModel()) . ' not found', 404);
-        // };
+        if ($exception instanceof ModelNotFoundException) {
+            return $this->errorResponse('Entry for ' . str_replace('App\\Models', '', $exception->getModel()) . ' not found', 404);
+        };
         if ($exception instanceof QueryException) {
             return $this->errorResponse('There was Issue with the Query', 500);
         };
