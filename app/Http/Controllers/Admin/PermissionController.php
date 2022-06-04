@@ -20,10 +20,10 @@ class PermissionController extends Controller
      */
     public function index(Request $request)
     {
-        if (!$request->user()->can('read-permission')) {
-            abort(403, 'Action Not Permitted');
-        }
-        return $this->successResponse(Permission::all(), 'Permissions List Fetched');
+        return $this->successResponse(
+            Permission::get(),
+            'Permissions List Fetched'
+        );
     }
 
     /**
@@ -45,10 +45,13 @@ class PermissionController extends Controller
      */
     public function show(Request $request, $slug)
     {
-        if (!$request->user()->can('read-permission')) {
-            abort(403, 'Action Not Permitted');
-        }
-        return $this->successResponse(Permission::where('slug', $slug)->firstOrFail(), 'Permission Fetched');
+        // if (!$request->user()->can('read-permission')) {
+        //     abort(403, 'Action Not Permitted');
+        // }
+        return $this->successResponse(
+            Permission::where('slug', $slug)->firstOrFail(),
+            'Permission Fetched'
+        );
     }
 
     /**
@@ -58,7 +61,7 @@ class PermissionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $slug)
     {
         //
     }
@@ -69,7 +72,7 @@ class PermissionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($slug)
     {
         //
     }

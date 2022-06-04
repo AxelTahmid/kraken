@@ -47,11 +47,25 @@ Route::prefix('/admin')->middleware('auth:api')->group(function () {
 
     Route::get('/dashboard', function () {
         return response()->json('Welcome Admin');
-    })->middleware('can:read-role');
+    });
+
 
     Route::middleware('role:admin')->group(function () {
 
-        Route::apiResource('/permission', PermissionController::class);
-        Route::apiResource('/role', RoleController::class);
+        Route::prefix('/permission')->controller(PermissionController::class)->group(function () {
+            Route::get('/', 'index')->middleware('can:read-permission');
+            Route::post('/', 'store')->middleware('can:create-permission');
+            Route::get('/{slug}', 'show')->middleware('can:read-permission');
+            Route::patch('/{slug}', 'update')->middleware('can:update-permission');
+            Route::delete('/{slug}', 'destroy')->middleware('can:delete-permission');
+        });
+
+        Route::prefix('/role')->controller(RoleController::class)->group(function () {
+            Route::get('/', 'index')->middleware('can:read-role');
+            Route::post('/', 'store')->middleware('can:create-role');
+            Route::get('/{slug}', 'show')->middleware('can:read-role');
+            Route::patch('/{slug}', 'update')->middleware('can:update-role');
+            Route::delete('/{slug}', 'destroy')->middleware('can:delete-role');
+        });
     });
 });

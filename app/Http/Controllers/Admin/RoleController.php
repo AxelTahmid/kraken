@@ -15,10 +15,10 @@ class RoleController extends Controller
      */
     public function index(Request $request)
     {
-        if (!$request->user()->can('read-role')) {
-            abort(403, 'Action Not Permitted');
-        }
-        return $this->successResponse(Role::all(), 'Roles List Fetched');
+        return $this->successResponse(
+            Role::all(),
+            'Roles List Fetched'
+        );
     }
 
     /**
@@ -40,10 +40,10 @@ class RoleController extends Controller
      */
     public function show(Request $request, $slug)
     {
-        if (!$request->user()->can('read-role')) {
-            abort(403, 'Action Not Permitted');
-        }
-        return $this->successResponse(Role::where('slug', $slug)->firstOrFail(), 'Role Fetched');
+        return $this->successResponse(
+            Role::where('slug', $slug)->firstOrFail(),
+            'Role Fetched'
+        );
     }
 
     /**
@@ -53,7 +53,7 @@ class RoleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $slug)
     {
         //
     }
@@ -64,7 +64,7 @@ class RoleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($slug)
     {
         //
     }
