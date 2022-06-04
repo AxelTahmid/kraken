@@ -19,7 +19,7 @@ class PermissionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
         return $this->successResponse(
             Permission::get(),
@@ -50,10 +50,10 @@ class PermissionController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  string  $slug
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request, $slug)
+    public function show($slug)
     {
         return $this->successResponse(
             Permission::where('slug', $slug)->with('roles')->firstOrFail(),
@@ -65,10 +65,10 @@ class PermissionController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  string  $slug
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $slug)
+    public function update($slug, Request $request)
     {
         $form_data = $request->validate([
             'name' => 'string|max:191',
@@ -86,8 +86,8 @@ class PermissionController extends Controller
             $message = 'Permission Updated.';
         }
         if (isset($form_data['role'])) {
-            Role::where('slug', $form_data['role'])->firstOrFail();
-            $permission->attach($form_data['role']);
+            $role = Role::where('slug', $form_data['role'])->firstOrFail();
+            $permission->roles()->attach($role);
             $message = 'Permission Updated, Role Attached.';
         };
 
@@ -100,7 +100,7 @@ class PermissionController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  string  $slug
      * @return \Illuminate\Http\Response
      */
     public function destroy($slug)
