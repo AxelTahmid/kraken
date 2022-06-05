@@ -4,16 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Permission;
-use App\Models\Role;
 use Illuminate\Http\Request;
 
 class PermissionController extends Controller
 {
-    // $user = $request->user();
-    // dd($user->hasRole('developer')); //will return true, if user has role
-    // dd($user->givePermissionsTo('create-tasks'));// will return permission, if not null
-    // dd($user->can('create-tasks')); // will return true, if user has permission
-
     /**
      * Display a listing of Permissions.
      *
@@ -71,29 +65,22 @@ class PermissionController extends Controller
     public function update(Request $request, $slug)
     {
         $form_data = $request->validate([
-            'name' => 'string|max:191',
-            'slug' => 'string|max:191',
-            // 'role' => 'string|max:191',
+            'name' => 'required|string|max:191',
+            'slug' => 'required|string|max:191',
         ]);
-        $permission = Permission::where('slug', $slug)->firstOrFail();
-        $message = 'Permision Found.';
 
-        if (isset($form_data['name'])  || isset($form_data['slug'])) {
-            $permission->update([
-                'name' => $form_data['name'],
-                'slug' => $form_data['slug'],
-            ]);
-            $message = 'Permission Updated.';
-        }
-        // if (isset($form_data['role'])) {
-        //     $role = Role::where('slug', $form_data['role'])->firstOrFail();
-        //     $permission->roles()->attach($role);
-        //     $message = 'Permission Updated, Role Attached.';
-        // };
+        $permission = Permission::where('slug', $slug)->firstOrFail();
+        $permission->update([
+            'name' => $form_data['name'],
+            'slug' => $form_data['slug'],
+        ]);
+
+        // take in permissions array
+        // givePermissionsTo or withdrawPermissionsTo or refreshPermissions
 
         return $this->successResponse(
             $permission,
-            $message
+            'Permission Updated.'
         );
     }
 

@@ -16,11 +16,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        // $user = $request->user();
+        // dd($user->hasRole('developer')); //will return true, if user has role
+        // dd($user->givePermissionsTo('create-tasks'));// will return permission, if not null
+        // dd($user->can('create-tasks')); // will return true, if user has permission
 
         $permissions = [
             [
