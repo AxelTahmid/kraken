@@ -15,7 +15,7 @@ class PermissionController extends Controller
     // dd($user->can('create-tasks')); // will return true, if user has permission
 
     /**
-     * Display a listing of the resource.
+     * Display a listing of Permissions.
      *
      * @return \Illuminate\Http\Response
      */
@@ -28,7 +28,7 @@ class PermissionController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created Permission.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -48,7 +48,7 @@ class PermissionController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified permission by slug.
      *
      * @param  string  $slug
      * @return \Illuminate\Http\Response
@@ -62,18 +62,18 @@ class PermissionController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update existing permissions by slug.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  string  $slug
      * @return \Illuminate\Http\Response
      */
-    public function update($slug, Request $request)
+    public function update(Request $request, $slug)
     {
         $form_data = $request->validate([
             'name' => 'string|max:191',
             'slug' => 'string|max:191',
-            'role' => 'string|max:191',
+            // 'role' => 'string|max:191',
         ]);
         $permission = Permission::where('slug', $slug)->firstOrFail();
         $message = 'Permision Found.';
@@ -85,11 +85,11 @@ class PermissionController extends Controller
             ]);
             $message = 'Permission Updated.';
         }
-        if (isset($form_data['role'])) {
-            $role = Role::where('slug', $form_data['role'])->firstOrFail();
-            $permission->roles()->attach($role);
-            $message = 'Permission Updated, Role Attached.';
-        };
+        // if (isset($form_data['role'])) {
+        //     $role = Role::where('slug', $form_data['role'])->firstOrFail();
+        //     $permission->roles()->attach($role);
+        //     $message = 'Permission Updated, Role Attached.';
+        // };
 
         return $this->successResponse(
             $permission,
@@ -105,6 +105,12 @@ class PermissionController extends Controller
      */
     public function destroy($slug)
     {
-        //
+        $permission = Permission::where('slug', $slug)->firstOrFail();
+        Permission::destroy($permission->id);
+
+        return $this->successResponse(
+            $permission,
+            'Permission Deleted.',
+        );
     }
 }

@@ -39,6 +39,11 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Delete Role',
                 'slug' => 'delete-role'
             ],
+            // can attach permission, give to users
+            [
+                'name' => 'Manage Role',
+                'slug' => 'manage-role'
+            ],
             [
                 'name' => 'Create Permission',
                 'slug' => 'create-permission'
@@ -54,6 +59,11 @@ class DatabaseSeeder extends Seeder
             [
                 'name' => 'Delete Permission',
                 'slug' => 'delete-permission'
+            ],
+            // can attach role, give to users
+            [
+                'name' => 'Manage Permission',
+                'slug' => 'manage-permission'
             ],
         ];
 
