@@ -99,13 +99,14 @@ class RoleController extends Controller
     }
 
     /**
-     * give role to user.
+     * give permission to role.
      *
      * @param  \Illuminate\Http\Request  $request
+     * @param  string  $slug
      * @param  array  $permission
      * @return \Illuminate\Http\Response
      */
-    public function givePermissionsToRole(Request $request, $permission)
+    public function attachPermission(Request $request, $slug)
     {
         //     $role = Role::where('slug', $form_data['role'])->firstOrFail();
         //     $role->permissions()->attach($permission);
@@ -113,13 +114,14 @@ class RoleController extends Controller
     }
 
     /**
-     * Update role of user.
+     * Update permission to role.
      *
      * @param  \Illuminate\Http\Request  $request
+     * @param  string  $slug
      * @param  array  $permission
      * @return \Illuminate\Http\Response
      */
-    public function withdrawPermissionsFromRole(Request $request, $permission)
+    public function revokePermission(Request $request, $slug)
     {
         //
     }
@@ -133,6 +135,6 @@ class RoleController extends Controller
      */
     public function manageUserRole(Request $request, $slug)
     {
-        //
+        // attach or detach or update role
     }
 }

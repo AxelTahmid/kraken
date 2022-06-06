@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Permission;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class PermissionController extends Controller
@@ -98,6 +99,69 @@ class PermissionController extends Controller
         return $this->successResponse(
             $permission,
             'Permission Deleted.',
+        );
+    }
+
+    /**
+     * Grant permission to a user
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function grant(Request $request)
+    {
+        $form_data = $request->validate([
+            'user_id' => 'required|int',
+            'permissions' => 'required|array',
+        ]);
+
+        $user = User::findOrFail($form_data['user_id']);
+        $res = $user->givePermissionsTo($form_data['permissions']);
+
+        return $this->successResponse(
+            $res,
+            'User Permissions Granted.',
+        );
+    }
+
+    /**
+     * Remove permission to a user
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function revoke(Request $request)
+    {
+        $form_data = $request->validate([
+            'user_id' => 'required|int',
+            'permissions' => 'required|array',
+        ]);
+
+        $user = User::findOrFail($form_data['user_id']);
+        $res = $user->withdrawPermissionsTo($form_data['permissions']);
+
+        return $this->successResponse(
+            $res,
+            'User Permissions Revoked.',
+        );
+    }
+
+    /**
+     * Refresh permission to a user
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function refesh(Request $request)
+    {
+        $form_data = $request->validate([
+            'user_id' => 'required|int',
+            'permissions' => 'required|array',
+        ]);
+
+        $user = User::findOrFail($form_data['user_id']);
+        $res = $user->refreshPermissions($form_data['permissions']);
+
+        return $this->successResponse(
+            $res,
+            'User Permissions Refreshed.',
         );
     }
 }
