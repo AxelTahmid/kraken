@@ -14,7 +14,7 @@ class RoleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
         return $this->successResponse(
             Role::with('permissions')->get(),
@@ -45,10 +45,10 @@ class RoleController extends Controller
     /**
      * Display the specified role.
      *
-     * @param  int  $id
+     * @param  string  $slug
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request, $slug)
+    public function show($slug)
     {
         return $this->successResponse(
             Role::where('slug', $slug)->with('permissions')->firstOrFail(),
@@ -131,13 +131,30 @@ class RoleController extends Controller
      */
     public function grant(Request $request)
     {
-        // attach role to user
         $form_data = $request->validate([
             'user_id' => 'required|int',
             'role_slug' => 'required|string',
         ]);
 
         $user = User::findOrFail($form_data['user_id']);
+
+        if ($user->hasRole($form_data['role_slug'])) {
+            return $this->errorResponse(
+                'User Role Exists.',
+                404
+            );
+        }
+        $role = Role::where('slug', $form_data['role_slug'])->with('permissions')->firstOrFail();
+
+        dd($role);
+
+        $user->roles()->attach($role);
+        // $user->refreshPermissions($role->permissions())
+
+        return $this->successResponse(
+            $user,
+            $form_data['role_slug'] . ' Role Granted.',
+        );
     }
 
     /**
@@ -148,6 +165,28 @@ class RoleController extends Controller
      */
     public function revoke(Request $request)
     {
-        // revoke role to user
+        $form_data = $request->validate([
+            'user_id' => 'required|int',
+            'role_slug' => 'required|string',
+        ]);
+
+        $user = User::findOrFail($form_data['user_id']);
+
+        if (!$user->hasRole($form_data['role_slug'])) {
+            return $this->errorResponse(
+                'User does not have Role.',
+                404
+            );
+        }
+
+        $role = Role::where('slug', $form_data['role_slug'])->with('permissions')->firstOrFail();
+
+        $user->roles()->detach($role);
+        // $user->withdrawPermissionsTo($role->permissions())
+
+        return $this->successResponse(
+            $user,
+            $form_data['role_slug'] . ' Role Revoked.',
+        );
     }
 }
