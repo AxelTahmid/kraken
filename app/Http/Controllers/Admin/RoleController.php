@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Role;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Role;
 
 class RoleController extends Controller
 {
@@ -102,11 +103,9 @@ class RoleController extends Controller
      * give permission to role.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  string  $slug
-     * @param  array  $permission
      * @return \Illuminate\Http\Response
      */
-    public function attachPermission(Request $request, $slug)
+    public function attachPermission(Request $request)
     {
         //     $role = Role::where('slug', $form_data['role'])->firstOrFail();
         //     $role->permissions()->attach($permission);
@@ -117,24 +116,38 @@ class RoleController extends Controller
      * Update permission to role.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  string  $slug
-     * @param  array  $permission
      * @return \Illuminate\Http\Response
      */
-    public function revokePermission(Request $request, $slug)
+    public function revokePermission(Request $request)
     {
         //
     }
 
     /**
-     * Update role of user.
+     * Grant role to user.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  string  $slug
      * @return \Illuminate\Http\Response
      */
-    public function manageUserRole(Request $request, $slug)
+    public function grant(Request $request)
     {
-        // attach or detach or update role
+        // attach role to user
+        $form_data = $request->validate([
+            'user_id' => 'required|int',
+            'role_slug' => 'required|string',
+        ]);
+
+        $user = User::findOrFail($form_data['user_id']);
+    }
+
+    /**
+     * Grant role to user.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function revoke(Request $request)
+    {
+        // revoke role to user
     }
 }

@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\AuthController;
 
 
@@ -71,6 +72,11 @@ Route::prefix('/admin')->middleware('auth:api')->group(function () {
             Route::get('/{slug}', 'show')->middleware('can:read-role');
             Route::patch('/{slug}', 'update')->middleware('can:update-role');
             Route::delete('/{slug}', 'destroy')->middleware('can:delete-role');
+        });
+
+        Route::prefix('/user')->controller(UserController::class)->group(function () {
+            Route::get('/', 'index');
+            Route::get('/{id}', 'show');
         });
     });
 });
