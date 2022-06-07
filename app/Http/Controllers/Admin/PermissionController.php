@@ -103,65 +103,40 @@ class PermissionController extends Controller
     }
 
     /**
-     * Grant permission to a user
+     * Grant, Revoke or Refresh permission to a user
+     * 
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function grant(Request $request)
+    public function manage(Request $request)
     {
         $form_data = $request->validate([
+            'action' => ['required', 'string', 'max:191', 'in:grant,revoke,refresh'],
             'user_id' => 'required|int',
             'permissions' => 'required|array',
         ]);
 
         $user = User::findOrFail($form_data['user_id']);
-        $res = $user->givePermissionsTo($form_data['permissions']);
+
+        if ($form_data['action'] == 'grant') {
+            $user->givePermissionsTo($form_data['permissions']);
+            $message = 'User Permissions Granted.';
+        }
+
+        if ($form_data['action'] == 'revoke') {
+            $user->withdrawPermissionsTo($form_data['permissions']);
+            $message = 'User Permissions Revoked.';
+        }
+
+        if ($form_data['action'] == 'refresh') {
+            $user->refreshPermissions($form_data['permissions']);
+            $message = 'User Permissions Refreshed.';
+        }
+
 
         return $this->successResponse(
-            $res,
-            'User Permissions Granted.',
-        );
-    }
-
-    /**
-     * Remove permission to a user
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function revoke(Request $request)
-    {
-        $form_data = $request->validate([
-            'user_id' => 'required|int',
-            'permissions' => 'required|array',
-        ]);
-
-        $user = User::findOrFail($form_data['user_id']);
-        $res = $user->withdrawPermissionsTo($form_data['permissions']);
-
-        return $this->successResponse(
-            $res,
-            'User Permissions Revoked.',
-        );
-    }
-
-    /**
-     * Refresh permission to a user
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function refesh(Request $request)
-    {
-        $form_data = $request->validate([
-            'user_id' => 'required|int',
-            'permissions' => 'required|array',
-        ]);
-
-        $user = User::findOrFail($form_data['user_id']);
-        $res = $user->refreshPermissions($form_data['permissions']);
-
-        return $this->successResponse(
-            $res,
-            'User Permissions Refreshed.',
+            null,
+            $message,
         );
     }
 }

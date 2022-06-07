@@ -61,10 +61,7 @@ Route::prefix('/admin')->middleware('auth:api')->group(function () {
             Route::patch('/{slug}', 'update')->middleware('can:update-permission');
             Route::delete('/{slug}', 'destroy')->middleware('can:delete-permission');
 
-            
-            Route::post('/grant', 'grant')->middleware('role:admin,manage-permission');
-            Route::post('/revoke', 'revoke')->middleware('role:admin,manage-permission');
-            Route::post('/refresh', 'refresh')->middleware('role:admin,manage-permission');
+            Route::post('/manage', 'manage')->middleware('role:admin,manage-permission');
         });
 
         Route::prefix('/role')->controller(RoleController::class)->group(function () {
