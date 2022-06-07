@@ -10,13 +10,13 @@ trait HasPermissionsTrait
 
     public function givePermissionsTo(...$permissions)
     {
-        $permissions = $this->getAllPermissions($permissions);
-
-        // dd($permissions);
+        // dd($permissions[0]);
+        $permissions = $this->getAllPermissions($permissions[0]);
 
         if ($permissions === null) {
             return $this;
         }
+
         $this->permissions()->saveMany($permissions);
         return $this;
     }

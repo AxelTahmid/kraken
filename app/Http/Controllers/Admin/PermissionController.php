@@ -32,7 +32,7 @@ class PermissionController extends Controller
     {
         $form_data = $request->validate([
             'name' => 'required|string|max:191',
-            'slug' => 'required|unique:permissions,slug|max:191',
+            'slug' => ['required', 'unique:permissions,slug', 'max:191'],
         ]);
         $permission = Permission::create($form_data);
 
@@ -76,9 +76,6 @@ class PermissionController extends Controller
             'slug' => $form_data['slug'],
         ]);
 
-        // take in permissions array
-        // givePermissionsTo or withdrawPermissionsTo or refreshPermissions
-
         return $this->successResponse(
             $permission,
             'Permission Updated.'
@@ -111,24 +108,31 @@ class PermissionController extends Controller
     public function manage(Request $request)
     {
         $form_data = $request->validate([
-            'action' => ['required', 'string', 'max:191', 'in:grant,revoke,refresh'],
+            '_action' => ['required', 'string', 'max:191', 'in:grant,revoke,refresh'],
             'user_id' => 'required|int',
             'permissions' => 'required|array',
         ]);
 
         $user = User::findOrFail($form_data['user_id']);
 
-        if ($form_data['action'] == 'grant') {
+        $message = 'Action not performed.';
+
+        if ($form_data['_action'] == 'grant') {
+
+            // dd($user->can($form_data['permissions']));
+            // check if user does not have permission before assigning
             $user->givePermissionsTo($form_data['permissions']);
             $message = 'User Permissions Granted.';
         }
 
-        if ($form_data['action'] == 'revoke') {
+        if ($form_data['_action'] == 'revoke') {
+
+            // check if user has permission before assigning
             $user->withdrawPermissionsTo($form_data['permissions']);
             $message = 'User Permissions Revoked.';
         }
 
-        if ($form_data['action'] == 'refresh') {
+        if ($form_data['_action'] == 'refresh') {
             $user->refreshPermissions($form_data['permissions']);
             $message = 'User Permissions Refreshed.';
         }
@@ -137,6 +141,7 @@ class PermissionController extends Controller
         return $this->successResponse(
             null,
             $message,
+            201
         );
     }
 }
