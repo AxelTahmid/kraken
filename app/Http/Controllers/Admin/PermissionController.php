@@ -115,33 +115,39 @@ class PermissionController extends Controller
 
         $user = User::findOrFail($form_data['user_id']);
 
-        $message = 'Action not performed.';
-
         if ($form_data['_action'] == 'grant') {
 
             // dd($user->can($form_data['permissions']));
             // check if user does not have permission before assigning
-            $user->givePermissionsTo($form_data['permissions']);
-            $message = 'User Permissions Granted.';
+            // can() wont work, returns total true/false
+            return $this->successResponse(
+                $user->givePermissionsTo($form_data['permissions']),
+                'User Permissions Granted.',
+                201
+            );
         }
 
         if ($form_data['_action'] == 'revoke') {
-
-            // check if user has permission before assigning
-            $user->withdrawPermissionsTo($form_data['permissions']);
-            $message = 'User Permissions Revoked.';
+            // check if user has permission before removing
+            return $this->successResponse(
+                $user->withdrawPermissionsTo($form_data['permissions']),
+                'User Permissions Revoked.',
+                201
+            );
         }
 
         if ($form_data['_action'] == 'refresh') {
-            $user->refreshPermissions($form_data['permissions']);
-            $message = 'User Permissions Refreshed.';
+            return $this->successResponse(
+                $user->refreshPermissions($form_data['permissions']),
+                'User Permissions Refreshed.',
+                201
+            );
         }
 
-
-        return $this->successResponse(
-            null,
-            $message,
-            201
+        return $this->errorResponse(
+            $user,
+            'Action not performed.',
+            400
         );
     }
 }
