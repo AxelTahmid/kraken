@@ -100,12 +100,12 @@ class RoleController extends Controller
     }
 
     /**
-     * give permission to role.
+     * Grant or Revoke permissions to a role.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function attachPermission(Request $request)
+    public function managePermissions(Request $request)
     {
         //     $role = Role::where('slug', $form_data['role'])->firstOrFail();
         //     $role->permissions()->attach($permission);
@@ -127,49 +127,70 @@ class RoleController extends Controller
         $form_data = $request->validate([
             '_action' => ['required', 'string', 'max:191', 'in:grant,revoke,change'],
             'user_id' => 'required|int',
-            'role_slug' => 'required|string',
+            'role_slug' => 'required|string|max:191',
         ]);
 
         $user = User::findOrFail($form_data['user_id']);
+        $role = Role::where('slug', $form_data['role_slug'])->firstOrFail();
+        // $role = Role::where('slug', $form_data['role_slug'])->with('permissions')->firstOrFail();
+
+        // dd($user, $role, $user_role);
+        dd();
 
 
         if ($form_data['_action'] == 'grant') {
 
-            if ($user->hasRole($form_data['role_slug'])) {
-                return $this->errorResponse(
-                    'User Role Exists.',
-                    404
+            if (!$user->hasRole($form_data['role_slug'])) {
+                return $this->successResponse(
+                    $user->roles()->attach($role),
+                    $form_data['role_slug'] . ' Role Granted.',
+                    201
                 );
-            }
-            $role = Role::where('slug', $form_data['role_slug'])->with('permissions')->firstOrFail();
+            };
 
-            dd($role);
-
-            $user->roles()->attach($role);
-            // $user->refreshPermissions($role->permissions())
-
-            return $this->successResponse(
-                $user,
-                $form_data['role_slug'] . ' Role Granted.',
+            return $this->errorResponse(
+                'User Role Exists.',
+                400
             );
         }
 
         if ($form_data['_action'] == 'revoke') {
-            if (!$user->hasRole($form_data['role_slug'])) {
-                return $this->errorResponse(
-                    'User does not have Role.',
-                    404
+
+            if ($user->hasRole($form_data['role_slug'])) {
+                return $this->successResponse(
+                    $user->roles()->detach($role),
+                    $form_data['role_slug'] . ' Role Revoked.',
                 );
             }
 
-            $role = Role::where('slug', $form_data['role_slug'])->with('permissions')->firstOrFail();
+            return $this->errorResponse(
+                'User does not have Role.',
+                400
+            );
+        }
 
-            $user->roles()->detach($role);
-            // $user->withdrawPermissionsTo($role->permissions())
+        if ($form_data['_action'] == 'change') {
 
-            return $this->successResponse(
-                $user,
-                $form_data['role_slug'] . ' Role Revoked.',
+            $user = User::with('roles')->findorFail($form_data['user_id']);
+            $prev_role_slug = $user->roles[0] && $user->roles[0]->slug ? $user->roles[0]->slug : null;
+
+            if (!$user->hasRole($form_data['role_slug'])) {
+
+                if ($prev_role_slug !== null) {
+                    $prev_role = Role::where('slug', $prev_role_slug)->firstOrFail();
+                    $user->roles()->detach($prev_role);
+                }
+
+                return $this->successResponse(
+                    $user->roles()->attach($role),
+                    'Role Changed.',
+                    201
+                );
+            }
+
+            return $this->errorResponse(
+                'User Already Has Role.',
+                400
             );
         }
     }

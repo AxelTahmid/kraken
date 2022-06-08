@@ -115,6 +115,15 @@ class PermissionController extends Controller
 
         $user = User::findOrFail($form_data['user_id']);
 
+
+        if ($form_data['_action'] == 'refresh') {
+            return $this->successResponse(
+                $user->refreshPermissions($form_data['permissions']),
+                'User Permissions Refreshed.',
+                201
+            );
+        }
+
         if ($form_data['_action'] == 'grant') {
 
             // dd($user->can($form_data['permissions']));
@@ -132,14 +141,6 @@ class PermissionController extends Controller
             return $this->successResponse(
                 $user->withdrawPermissionsTo($form_data['permissions']),
                 'User Permissions Revoked.',
-                201
-            );
-        }
-
-        if ($form_data['_action'] == 'refresh') {
-            return $this->successResponse(
-                $user->refreshPermissions($form_data['permissions']),
-                'User Permissions Refreshed.',
                 201
             );
         }
