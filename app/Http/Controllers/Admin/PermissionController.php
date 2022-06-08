@@ -105,7 +105,7 @@ class PermissionController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function manage(Request $request)
+    public function manageUserPermissions(Request $request)
     {
         $form_data = $request->validate([
             '_action' => ['required', 'string', 'max:191', 'in:grant,revoke,refresh'],
@@ -114,7 +114,6 @@ class PermissionController extends Controller
         ]);
 
         $user = User::findOrFail($form_data['user_id']);
-
 
         if ($form_data['_action'] == 'refresh') {
             return $this->successResponse(
@@ -125,7 +124,6 @@ class PermissionController extends Controller
         }
 
         if ($form_data['_action'] == 'grant') {
-
             // dd($user->can($form_data['permissions']));
             // check if user does not have permission before assigning
             // can() wont work, returns total true/false
@@ -137,7 +135,7 @@ class PermissionController extends Controller
         }
 
         if ($form_data['_action'] == 'revoke') {
-            // check if user has permission before removing
+            // needs proper validation
             return $this->successResponse(
                 $user->withdrawPermissionsTo($form_data['permissions']),
                 'User Permissions Revoked.',

@@ -57,19 +57,20 @@ Route::prefix('/admin')->middleware('auth:api')->group(function () {
         Route::prefix('/permission')->controller(PermissionController::class)->group(function () {
             Route::get('/', 'index')->middleware('can:read-permission');
             Route::post('/', 'store')->middleware('can:create-permission');
+            Route::post('/manage-user', 'manageUserPermissions')->middleware('can:manage-permission');
             Route::get('/{slug}', 'show')->middleware('can:read-permission');
             Route::patch('/{slug}', 'update')->middleware('can:update-permission');
             Route::delete('/{slug}', 'destroy')->middleware('can:delete-permission');
-            Route::post('/manage', 'manage')->middleware('role:admin,manage-permission');
         });
 
         Route::prefix('/role')->controller(RoleController::class)->group(function () {
             Route::get('/', 'index')->middleware('can:read-role');
             Route::post('/', 'store')->middleware('can:create-role');
+            Route::post('/manage-user', 'manageUserRoles')->middleware('can:manage-role');
+            Route::post('/manage-permissions', 'manageRolePermissions')->middleware('can:manage-role');
             Route::get('/{slug}', 'show')->middleware('can:read-role');
             Route::patch('/{slug}', 'update')->middleware('can:update-role');
             Route::delete('/{slug}', 'destroy')->middleware('can:delete-role');
-            Route::post('/manage', 'manage')->middleware('role:admin,manage-role');
         });
 
         Route::prefix('/user')->controller(UserController::class)->group(function () {

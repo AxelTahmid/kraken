@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Role;
 use App\Models\User;
+use App\Models\Permission;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -105,14 +106,31 @@ class RoleController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function managePermissions(Request $request)
+    public function manageRolePermissions(Request $request)
     {
-        //     $role = Role::where('slug', $form_data['role'])->firstOrFail();
+        $form_data = $request->validate([
+            '_action' => ['required', 'string', 'max:191', 'in:grant,revoke,refresh'],
+            'role_slug' => 'required|string|max:191',
+            'permissions' => 'required|array',
+        ]);
+
+        $role = Role::where('slug', $form_data['role_slug'])->firstOrFail();
+        $permissions_arr = Permission::whereIn('slug', $form_data['permissions'])->get();
+
+
+        foreach ($permissions_arr as $permission) {
+            print($permission);
+        };
+        die;
+
+        if ($form_data['_action'] == 'refresh') {
+        };
+        if ($form_data['_action'] == 'grant') {
+        };
+        if ($form_data['_action'] == 'revoke') {
+        };
         //     $role->permissions()->attach($permission);
         //     $message = 'Permission Updated, Role Attached.';
-
-        // _action , role_slug, permission array
-        // validate role_slug exists, take permission array, refresh it 
     }
 
 
@@ -122,7 +140,7 @@ class RoleController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function manage(Request $request)
+    public function manageUserRoles(Request $request)
     {
         $form_data = $request->validate([
             '_action' => ['required', 'string', 'max:191', 'in:grant,revoke,change'],
@@ -132,11 +150,6 @@ class RoleController extends Controller
 
         $user = User::findOrFail($form_data['user_id']);
         $role = Role::where('slug', $form_data['role_slug'])->firstOrFail();
-        // $role = Role::where('slug', $form_data['role_slug'])->with('permissions')->firstOrFail();
-
-        // dd($user, $role, $user_role);
-        dd();
-
 
         if ($form_data['_action'] == 'grant') {
 
@@ -172,7 +185,7 @@ class RoleController extends Controller
         if ($form_data['_action'] == 'change') {
 
             $user = User::with('roles')->findorFail($form_data['user_id']);
-            $prev_role_slug = $user->roles[0] && $user->roles[0]->slug ? $user->roles[0]->slug : null;
+            $prev_role_slug = $user->roles && $user->roles[0]->slug ? $user->roles[0]->slug : null;
 
             if (!$user->hasRole($form_data['role_slug'])) {
 
@@ -192,5 +205,10 @@ class RoleController extends Controller
                 400
             );
         }
+
+        return $this->errorResponse(
+            'Action Not Performed.',
+            400
+        );
     }
 }
