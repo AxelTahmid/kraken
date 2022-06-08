@@ -117,7 +117,7 @@ class RoleController extends Controller
 
 
     /**
-     * Grant or revoke role to user.
+     * Grant, Revoke & Change role of a user.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -180,7 +180,6 @@ class RoleController extends Controller
                     $prev_role = Role::where('slug', $prev_role_slug)->firstOrFail();
                     $user->roles()->detach($prev_role);
                 }
-
                 return $this->successResponse(
                     $user->roles()->attach($role),
                     'Role Changed.',
