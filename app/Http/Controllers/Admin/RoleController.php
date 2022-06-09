@@ -101,12 +101,13 @@ class RoleController extends Controller
     }
 
     /**
+     * Access Control List ( ACL )
      * Grant or Revoke permissions to a role.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function manageRolePermissions(Request $request)
+    public function _ACL(Request $request)
     {
         $form_data = $request->validate([
             '_action' => ['required', 'string', 'max:191', 'in:grant,revoke,refresh'],
@@ -135,12 +136,13 @@ class RoleController extends Controller
 
 
     /**
+     * Role Based Access Control ( RBAC )
      * Grant, Revoke & Change role of a user.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function manageUserRoles(Request $request)
+    public function _RBAC(Request $request)
     {
         $form_data = $request->validate([
             '_action' => ['required', 'string', 'max:191', 'in:grant,revoke,change'],

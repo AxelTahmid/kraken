@@ -100,12 +100,13 @@ class PermissionController extends Controller
     }
 
     /**
-     * Grant, Revoke or Refresh permission to a user
+     * Access Control List ( ACL )
+     * Grant, Revoke or Refresh permission of a user
      * 
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function manageUserPermissions(Request $request)
+    public function _ACL(Request $request)
     {
         $form_data = $request->validate([
             '_action' => ['required', 'string', 'max:191', 'in:grant,revoke,refresh'],
