@@ -116,22 +116,38 @@ class RoleController extends Controller
         ]);
 
         $role = Role::where('slug', $form_data['role_slug'])->firstOrFail();
-        $permissions_arr = Permission::whereIn('slug', $form_data['permissions'])->get();
+        $permission_models = Permission::whereIn('slug', $form_data['permissions'])->with('roles')->get();
 
-
-        foreach ($permissions_arr as $permission) {
-            print($permission);
+        if (!count($permission_models)) {
+            return $this->errorResponse(
+                'No Matching Permissions Found.',
+                400
+            );
         };
-        die;
 
         if ($form_data['_action'] == 'refresh') {
+
+            $role->permissions()->detach();
+            $role->permissions()->saveMany($permission_models);
+
+            return $this->successResponse(
+                Role::with('permissions')->findOrFail($role->id),
+                $role->name . ' Permissions Refreshed.',
+                201
+            );
         };
+
+
         if ($form_data['_action'] == 'grant') {
+
+            $role->permissions()->saveMany($permission_models);
         };
+
+
         if ($form_data['_action'] == 'revoke') {
+
+            $role->permissions()->detach($permission_models);
         };
-        //     $role->permissions()->attach($permission);
-        //     $message = 'Permission Updated, Role Attached.';
     }
 
 
