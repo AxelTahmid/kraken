@@ -1,13 +1,21 @@
-# Zero Config Laravel API Starter Boilerplate.
+# Laravel API Starter Boilerplate.
 
 Laracom is a Laravel API starter template created as an experiment. feel free to fork or use however you want.
 
+
 ## Project Features & Progress
+---
 
--   OAuth2 Server
--   Role Based Access Control ( RBAC ) without any package
+-   OAuth2 using Laravel Passport
+-   Role Based Access Control ( RBAC ) without any package.
+    - User can have multiple Roles & Permissions.
+    - User can have Permissions without Role.
+    - User can have Permissions through Role.
+    - Permissions can be grouped with Role.
 
-## Installation Steps:
+
+## Getting Started:
+---
 
 1. `PHP >= 8.0.2` & `Composer >=2` installed in your environment.
     ```sh
@@ -31,3 +39,7 @@ Laracom is a Laravel API starter template created as an experiment. feel free to
     ```sh
     php artisan serve
     ```
+
+## API Documentation:
+---
+
