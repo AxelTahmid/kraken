@@ -125,6 +125,12 @@ class RoleController extends Controller
             );
         };
 
+        // foreach ($permission_models as $permission) {
+        //     if (!$permission->roles->contains($role)) {
+        //         return false;
+        //     }
+        // }
+
         if ($form_data['_action'] == 'refresh') {
 
             $role->permissions()->detach();
@@ -132,7 +138,7 @@ class RoleController extends Controller
 
             return $this->successResponse(
                 Role::with('permissions')->findOrFail($role->id),
-                $role->name . ' Permissions Refreshed.',
+                ' Permissions Refreshed for ' . $role->name . '.',
                 201
             );
         };
@@ -140,13 +146,40 @@ class RoleController extends Controller
 
         if ($form_data['_action'] == 'grant') {
 
+            foreach ($permission_models as $permission) {
+                if ($permission->roles->contains($role)) {
+                    return $this->errorResponse(
+                        'Permission: ' . $permission->slug . '; exists for ' . $role->name,
+                        400
+                    );
+                }
+            }
             $role->permissions()->saveMany($permission_models);
+
+            return $this->successResponse(
+                Role::with('permissions')->findOrFail($role->id),
+                'Permissions Granted to ' . $role->name . '.',
+                201
+            );
         };
 
 
         if ($form_data['_action'] == 'revoke') {
 
+            foreach ($permission_models as $permission) {
+                if (!$permission->roles->contains($role)) {
+                    return $this->errorResponse(
+                        $role->name . ' does not have permission: ' . $permission->slug . '',
+                        400
+                    );
+                }
+            }
             $role->permissions()->detach($permission_models);
+
+            return $this->successResponse(
+                Role::with('permissions')->findOrFail($role->id),
+                'Permissions Revoked for ' . $role->name . '.',
+            );
         };
     }
 
@@ -172,15 +205,17 @@ class RoleController extends Controller
         if ($form_data['_action'] == 'grant') {
 
             if (!$user->hasRole($form_data['role_slug'])) {
+
+                $user->roles()->attach($role);
                 return $this->successResponse(
-                    $user->roles()->attach($role),
-                    $form_data['role_slug'] . ' Role Granted.',
+                    User::with('roles')->findOrFail($user->id),
+                    $role->name . ' Privilege Granted.',
                     201
                 );
             };
 
             return $this->errorResponse(
-                'User Role Exists.',
+                'User is already' . $role->name,
                 400
             );
         }
@@ -188,14 +223,16 @@ class RoleController extends Controller
         if ($form_data['_action'] == 'revoke') {
 
             if ($user->hasRole($form_data['role_slug'])) {
+
+                $user->roles()->detach($role);
                 return $this->successResponse(
-                    $user->roles()->detach($role),
-                    $form_data['role_slug'] . ' Role Revoked.',
+                    User::with('roles')->findOrFail($user->id),
+                    $role->name . ' Privilege Revoked.',
                 );
             }
 
             return $this->errorResponse(
-                'User does not have Role.',
+                'User is not ' . $role->name,
                 400
             );
         }
@@ -211,9 +248,11 @@ class RoleController extends Controller
                     $prev_role = Role::where('slug', $prev_role_slug)->firstOrFail();
                     $user->roles()->detach($prev_role);
                 }
+
+                $user->roles()->attach($role);
                 return $this->successResponse(
-                    $user->roles()->attach($role),
-                    'Role Changed.',
+                    User::with('roles')->findOrFail($user->id),
+                    'Changed to ' . $role->name . ' Privilege.',
                     201
                 );
             }
