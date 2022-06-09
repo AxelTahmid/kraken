@@ -102,7 +102,7 @@ class RoleController extends Controller
 
     /**
      * Access Control List ( ACL )
-     * Grant or Revoke permissions to a role.
+     * Grant, Revoke or Refresh permissions to a role.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -125,12 +125,6 @@ class RoleController extends Controller
             );
         };
 
-        // foreach ($permission_models as $permission) {
-        //     if (!$permission->roles->contains($role)) {
-        //         return false;
-        //     }
-        // }
-
         if ($form_data['_action'] == 'refresh') {
 
             $role->permissions()->detach();
@@ -142,7 +136,6 @@ class RoleController extends Controller
                 201
             );
         };
-
 
         if ($form_data['_action'] == 'grant') {
 
@@ -162,7 +155,6 @@ class RoleController extends Controller
                 201
             );
         };
-
 
         if ($form_data['_action'] == 'revoke') {
 
@@ -258,7 +250,7 @@ class RoleController extends Controller
             }
 
             return $this->errorResponse(
-                'User Already Has Role.',
+                'User Already Has ' . $role->name . ' Role.',
                 400
             );
         }
