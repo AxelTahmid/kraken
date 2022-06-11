@@ -1,6 +1,6 @@
-# Laravel API Starter Boilerplate with RBAC
+# KRAKEN - Laravel API Boilerplate with RBAC
 
-This is a API boilerplate created to take out the pain of developing a project from scratch. It includes the bare minimum you need to get started. I believe the less dependencies you have to manage, the less of a headache you will get to maintain the code long term. With an approach of "Convention Over Configuration" for Developer Experience, I present to you, a template to get things started.
+Kraken is a API boilerplate created to take out the pain of developing a project from scratch. It includes the bare minimum you need to get started. I believe the less dependencies you have to manage, the less of a headache you will get to maintain the code long term. 
 
 ## What's Baked In?
 
@@ -71,13 +71,13 @@ This is a API boilerplate created to take out the pain of developing a project f
 
 #### Role Based Access Control Routes: 
 
-- `PermissionController@_ACL` : responsible for assinging permissions to users, without the intervention of roles. 
-- `RoleController@_ACL` : responsible for grouping permissions to roles
-- `RoleController@_RBAC` : responsible to assigning role to user
+- `RoleAccessController` : Single Action Controller, Manages User Roles. 
+- `PermissionAccessController@manageRolePermissions` : responsible for grouping permissions to roles
+- `PermissionAccessController@manageUserPermissions` : responsible to assigning permissions to user
 
 ```sh
-  POST       api/admin/permission/access-control ........ Admin\PermissionController@_ACL  
-  POST       api/admin/role/access-control .............. Admin\RoleController@_ACL  
-  POST       api/admin/role/control-panel ............... Admin\RoleController@_RBAC 
+  POST       api/admin/access-control/role-permissions ........... RBAC\PermissionAccessController@manageRolePermissions  
+  POST       api/admin/access-control/user-permissions ........... RBAC\PermissionAccessController@manageUserPermissions  
+  POST       api/admin/access-control/user-role .................. RBAC\RoleAccessController
 ```
 
