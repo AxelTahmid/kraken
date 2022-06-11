@@ -7,7 +7,8 @@ use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\RBAC\PermissionAccessController;
-use App\Http\Controllers\RBAC\RoleAccessController;
+use App\Http\Controllers\RBAC\RolePermissionController;
+use App\Http\Controllers\RBAC\UserRoleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -68,8 +69,8 @@ Route::prefix('/admin')->middleware('auth:api', 'role:admin')->group(function ()
     });
 
     Route::prefix('/access-control')->group(function () {
-        Route::post('/user-role', RoleAccessController::class)->middleware('can:manage-role');
-        Route::post('/role-permissions', [PermissionAccessController::class, 'manageRolePermissions'])->middleware('can:manage-permission');
+        Route::post('/user-role', UserRoleController::class)->middleware('can:manage-role');
+        Route::post('/role-permissions', RolePermissionController::class)->middleware('can:manage-permission');
         Route::post('/user-permissions', [PermissionAccessController::class, 'manageUserPermissions'])->middleware('can:manage-permission');
     });
 

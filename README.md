@@ -70,14 +70,15 @@ Kraken is a API boilerplate created to take out the pain of developing a project
 ```
 
 #### Role Based Access Control Routes: 
+These are all single action controllers with functions invoked on switch case.
 
-- `RoleAccessController` : Single Action Controller, Manages User Roles. 
-- `PermissionAccessController@manageRolePermissions` : responsible for grouping permissions to roles
-- `PermissionAccessController@manageUserPermissions` : responsible to assigning permissions to user
+- `UserRoleController` : Manages User Roles. 
+- `RolePermissionController` : Manages Permission of Roles, i.e: group permissions into roles
+- `UserPermissionController` : Assign individual permissions to User without Role
 
 ```sh
-  POST       api/admin/access-control/role-permissions ........... RBAC\PermissionAccessController@manageRolePermissions  
-  POST       api/admin/access-control/user-permissions ........... RBAC\PermissionAccessController@manageUserPermissions  
-  POST       api/admin/access-control/user-role .................. RBAC\RoleAccessController
+  POST       api/admin/access-control/role-permissions ........... RBAC\RolePermissionController  
+  POST       api/admin/access-control/user-permissions ........... RBAC\UserPermissionController  
+  POST       api/admin/access-control/user-role .................. RBAC\UserRoleController
 ```
 
