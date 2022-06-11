@@ -42,7 +42,7 @@ class PermissionAccessController extends Controller
 
             return $this->successResponse(
                 Role::with('permissions')->findOrFail($role->id),
-                ' Permissions Refreshed for ' . $role->name . '.',
+                'Permissions Refreshed for ' . $role->name . '.',
                 201
             );
         };

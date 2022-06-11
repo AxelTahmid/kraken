@@ -66,7 +66,7 @@ class RoleAccessController extends Controller
         if ($form_data['_action'] == 'change') {
 
             $user = User::with('roles')->findorFail($form_data['user_id']);
-            $prev_role_slug = $user->roles && $user->roles[0]->slug ? $user->roles[0]->slug : null;
+            $prev_role_slug = !empty($user->roles[0]) && $user->roles[0]->slug ? $user->roles[0]->slug : null;
 
             if (!$user->hasRole($form_data['role_slug'])) {
 
