@@ -50,7 +50,7 @@ class PermissionController extends Controller
     public function show($slug)
     {
         return $this->successResponse(
-            Permission::where('slug', $slug)->with('roles')->firstOrFail(),
+            Permission::with('roles')->where('slug', $slug)->firstOrFail(),
             'Permission Fetched'
         );
     }

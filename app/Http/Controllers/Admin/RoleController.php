@@ -50,7 +50,7 @@ class RoleController extends Controller
     public function show($slug)
     {
         return $this->successResponse(
-            Role::where('slug', $slug)->with('permissions')->firstOrFail(),
+            Role::with('permissions')->where('slug', $slug)->firstOrFail(),
             'Role Fetched'
         );
     }
